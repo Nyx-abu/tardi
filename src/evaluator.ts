@@ -1,6 +1,7 @@
 import { generateObject } from 'ai';
 import { google } from '@ai-sdk/google';
-import { openai } from '@ai-sdk/openai';
+import { openai, createOpenAI } from '@ai-sdk/openai';
+import { anthropic } from '@ai-sdk/anthropic';
 import { z } from 'zod';
 import { AgentTestConfig } from './schema';
 import Ajv from 'ajv';
@@ -90,12 +91,28 @@ export async function evaluateIteration(
   // Stage 2: LLM as a judge (if configured)
   if (config.evaluator) {
     let model;
+    
+    // Core providers
     if (config.evaluator.provider === 'google') {
       model = google(config.evaluator.model);
     } else if (config.evaluator.provider === 'openai') {
       model = openai(config.evaluator.model);
+    } else if (config.evaluator.provider === 'anthropic') {
+      model = anthropic(config.evaluator.model);
+    } else if (config.evaluator.provider === 'local') {
+      const customOpenAI = createOpenAI({
+         baseURL: config.evaluator.baseUrl || 'http://localhost:11434/v1',
+         apiKey: 'dummy'
+      });
+      model = customOpenAI(config.evaluator.model);
     } else {
-      throw new Error(`Unsupported provider: ${config.evaluator.provider}`);
+      // Dynamic Plugin Support
+      try {
+        const plugin = await import(config.evaluator.provider);
+        model = plugin.default(config.evaluator.model);
+      } catch (e) {
+        throw new Error(`Unsupported provider or missing plugin: ${config.evaluator.provider}`);
+      }
     }
 
     try {

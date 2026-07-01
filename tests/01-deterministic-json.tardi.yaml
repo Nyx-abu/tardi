@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=../tardi.schema.json
+name: "Agent 01-deterministic-json"
+agentCommand: "node agents/01-deterministic-json.js"
+iterations: 1
+concurrency: 1
+timeoutMs: 3000
+evaluator:
+  provider: google
+  model: gemini-2.5-flash
+  rubric: "Must output valid JSON containing status success and answer Paris"

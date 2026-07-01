@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=../tardi.schema.json
+name: "Agent 02-nondeterministic-text"
+agentCommand: "node agents/02-nondeterministic-text.js"
+iterations: 1
+concurrency: 1
+timeoutMs: 3000
+evaluator:
+  provider: google
+  model: gemini-2.5-flash
+  rubric: "Must explain mitochondria"

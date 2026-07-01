@@ -11,9 +11,10 @@ export const AgentTestSchema = z.object({
     jsonSchema: z.record(z.string(), z.any()).optional(),
   }).optional(),
   evaluator: z.object({
-    provider: z.enum(['google', 'openai', 'groq']).default('google'),
-    model: z.string().default('gemini-1.5-flash'),
+    provider: z.string(),
+    model: z.string(),
     rubric: z.string(),
+    baseUrl: z.string().optional(),
   }).optional(),
 });
 

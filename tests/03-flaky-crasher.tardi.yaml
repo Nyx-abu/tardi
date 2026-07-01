@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=../tardi.schema.json
+name: "Agent 03-flaky-crasher"
+agentCommand: "node agents/03-flaky-crasher.js"
+iterations: 1
+concurrency: 1
+timeoutMs: 3000
+evaluator:
+  provider: google
+  model: gemini-2.5-flash
+  rubric: "Should succeed and return status success"

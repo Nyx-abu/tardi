@@ -13,8 +13,9 @@ exports.AgentTestSchema = zod_1.z.object({
         jsonSchema: zod_1.z.record(zod_1.z.string(), zod_1.z.any()).optional(),
     }).optional(),
     evaluator: zod_1.z.object({
-        provider: zod_1.z.enum(['google', 'openai', 'groq']).default('google'),
-        model: zod_1.z.string().default('gemini-1.5-flash'),
+        provider: zod_1.z.string(),
+        model: zod_1.z.string(),
         rubric: zod_1.z.string(),
+        baseUrl: zod_1.z.string().optional(),
     }).optional(),
 });

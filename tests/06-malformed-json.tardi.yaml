@@ -1,0 +1,14 @@
+# yaml-language-server: $schema=../tardi.schema.json
+name: "Agent 06-malformed-json"
+agentCommand: "node agents/06-malformed-json.js"
+iterations: 1
+concurrency: 1
+timeoutMs: 3000
+assertions:
+  jsonSchema:
+    type: object
+    required: ["status", "result"]
+evaluator:
+  provider: google
+  model: gemini-2.5-flash
+  rubric: "Must output parseable JSON"

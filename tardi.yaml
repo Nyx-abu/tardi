@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://schema.tardi.dev/v1/test-suite.json
+name: My Tardi Test Suite
+agentCommand: "echo '{\"status\": \"Success\"}'"
+iterations: 5
+concurrency: 2
+timeoutMs: 5000
+assertions:
+  regex: "Success"
+evaluator:
+  provider: local
+  model: llama3
+  rubric: "Output must contain Success"
