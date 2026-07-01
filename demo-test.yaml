@@ -1,0 +1,6 @@
+name: "Greeting Agent Test"
+agentCommand: "node tests/dummy-agent.js"
+iterations: 15
+concurrency: 5
+assertions:
+  regex: "greeting"

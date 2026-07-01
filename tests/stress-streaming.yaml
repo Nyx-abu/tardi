@@ -1,0 +1,6 @@
+name: "Streaming Agent Stress Test"
+agentCommand: "node tests/streaming-agent.js"
+iterations: 20
+concurrency: 5
+assertions:
+  regex: "\\[final_answer\\]"

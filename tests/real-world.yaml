@@ -1,0 +1,11 @@
+name: Tardi Real-World Agent Stress Test
+agentCommand: node tests/real-world-agents/mock-tgpt.js
+iterations: 10
+concurrency: 2
+timeoutMs: 5000
+assertions:
+  regex: "Success"
+evaluator:
+  provider: google
+  model: gemini-1.5-flash
+  rubric: "Output must contain the word Success"

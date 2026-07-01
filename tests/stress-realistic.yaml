@@ -1,0 +1,6 @@
+name: "Realistic API Agent Stress Test"
+agentCommand: "node tests/realistic-agent.js"
+iterations: 30
+concurrency: 10
+assertions:
+  regex: "\"answer\""
