@@ -1,43 +1,144 @@
-﻿import chalk from "chalk";
+import chalk from "chalk";
+
+function colorizeGradient(text: string, xStart: number, totalWidth: number): string {
+    let result = "";
+    for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        if (char === ' ') {
+            result += ' ';
+            continue;
+        }
+        const x = xStart + i;
+        const factor = Math.min(1, Math.max(0, x / totalWidth));
+        
+        // Neon sunset gradient: Cyan (#00F2FE, 0, 242, 254) to Hot Pink (#F355DA, 243, 85, 218)
+        const r = Math.round(0 + factor * 243);
+        const g = Math.round(242 + factor * (85 - 242));
+        const b = Math.round(254 + factor * (218 - 254));
+        
+        result += chalk.rgb(r, g, b)(char);
+    }
+    return result;
+}
+
+function colorizeSunglasses(text: string): string {
+    let result = "";
+    for (let char of text) {
+        if (char === '█') {
+            // Dark lens color
+            result += chalk.rgb(30, 30, 45)(char);
+        } else if (char === '▀' || char === '▄' || char === ' ') {
+            // Neon Yellow Frame
+            result += chalk.rgb(255, 235, 0).bold(char);
+        } else {
+            result += char;
+        }
+    }
+    return result;
+}
+
 export function printLogo() {
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#a2a3a2')('=') + chalk.hex('#747677')('a') + chalk.hex('#6d7172')('!') + chalk.hex('#6f7374')('!') + chalk.hex('#878787')('c') + chalk.hex('#7f8080')('b') + chalk.hex('#606668')('0') + chalk.hex('#5b6467')('0') + chalk.hex('#5a6567')('0') + chalk.hex('#5c6466')('0') + chalk.hex('#6f7172')('!') + chalk.hex('#b3b3b3')(',') + chalk.hex('#b5b5b5')('.') + chalk.hex('#babbbb')('_') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#9a9a9b')('+') + chalk.hex('#5b6365')('0') + chalk.hex('#91a1a6')('+') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#97a8ad')('=') + chalk.hex('#626c6f')('?') + chalk.hex('#a7b8be')('.') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#7b888c')('c') + chalk.hex('#697477')('!') + chalk.hex('#737f83')('a') + chalk.hex('#8a999d')(':') + chalk.hex('#869498')(';') + chalk.hex('#687377')('!') + chalk.hex('#5f6465')('0') + chalk.hex('#b1b1b1')(',') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#9e9f9f')('=') + chalk.hex('#5f6061')('1') + chalk.hex('#869599')(':') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#a0b1b6')(',') + chalk.hex('#687477')('!') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#6d797c')('a') + chalk.hex('#98aaae')('=') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b2c5ca')('_') + chalk.hex('#7c898e')('c') + chalk.hex('#7a7b7b')('a') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#828383')('b') + chalk.hex('#5d6769')('0') + chalk.hex('#798689')('b') + chalk.hex('#7c898d')('c') + chalk.hex('#b1c5cb')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#626c6f')('?') + chalk.hex('#b0c3c9')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#adc0c5')('_') + chalk.hex('#576163')('1') + chalk.hex('#818f93')(';') + chalk.hex('#aabdc2')('.') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5cb')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#8b9a9f')(':') + chalk.hex('#8d8e8e')(';') + ' ' + chalk.hex('#868686')('c') + chalk.hex('#727272')('!') + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#5b5e5f')('1') + chalk.hex('#9aaab0')('-') + chalk.hex('#b0c4ca')('_') + chalk.hex('#657174')('?') + chalk.hex('#b2c5cb')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#87969b')(':') + chalk.hex('#909fa4')('+') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#768286')('b') + chalk.hex('#1f1f1f')('$') + chalk.hex('#222323')('9') + chalk.hex('#3f4445')('5') + chalk.hex('#616b6e')('?') + chalk.hex('#8e9da2')('+') + chalk.hex('#afc2c8')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b0c4ca')('_') + chalk.hex('#acbfc5')('.') + chalk.hex('#788589')('b') + chalk.hex('#3c3f3f')('5') + chalk.hex('#2f2f2f')('8') + chalk.hex('#222222')('$') + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#636667')('0') + chalk.hex('#a3b4b9')(',') + chalk.hex('#b1c5ca')('_') + chalk.hex('#a0b1b6')(',') + chalk.hex('#7b898d')('c') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c5ca')('_') + chalk.hex('#697578')('!') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5cb')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#667174')('?') + chalk.hex('#282929')('9') + chalk.hex('#313131')('7') + chalk.hex('#5c5c5c')('1') + chalk.hex('#4b4b4b')('4') + chalk.hex('#373838')('6') + chalk.hex('#474e4f')('3') + chalk.hex('#4f5759')('2') + chalk.hex('#272929')('9') + chalk.hex('#3b3c3b')('6') + chalk.hex('#6f6f6e')('!') + chalk.hex('#333333')('7') + chalk.hex('#727272')('!') + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#a7a7a7')('-') + chalk.hex('#849297')(';') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#707d81')('a') + chalk.hex('#abbec3')('.') + chalk.hex('#b1c5cb')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c3c9')('_') + chalk.hex('#6c787b')('!') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#9dadb3')('-') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#586163')('1') + chalk.hex('#3a3a3a')('6') + chalk.hex('#737373')('!') + chalk.hex('#555555')('2') + chalk.hex('#383838')('6') + chalk.hex('#2f2f2f')('8') + chalk.hex('#292929')('9') + chalk.hex('#313131')('7') + chalk.hex('#656565')('0') + chalk.hex('#505050')('3') + chalk.hex('#141514')('#') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#595e60')('1') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c4ca')('_') + chalk.hex('#6c787b')('!') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#97a8ad')('=') + chalk.hex('#869599')(':') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c4cb')('_') + chalk.hex('#6f7a7e')('a') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b0c4c9')('_') + chalk.hex('#555c5e')('1') + chalk.hex('#545454')('2') + chalk.hex('#4c4b4b')('4') + chalk.hex('#252626')('9') + chalk.hex('#2e3133')('7') + chalk.hex('#393f41')('6') + chalk.hex('#1a1b1b')('W') + chalk.hex('#5a5a5a')('1') + chalk.hex('#292929')('9') + chalk.hex('#525a5d')('2') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + chalk.hex('#bebebe')('_') + chalk.hex('#7d8b8e')('c') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c5ca')('_') + chalk.hex('#6d797d')('a') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c5ca')('_') + chalk.hex('#819093')(';') + chalk.hex('#9daeb3')('-') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c4ca')('_') + chalk.hex('#6e7a7e')('a') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#aec1c6')('_') + chalk.hex('#4b5152')('3') + chalk.hex('#4e5556')('2') + chalk.hex('#9bacb2')('-') + chalk.hex('#a0b3b8')(',') + chalk.hex('#869699')(':') + chalk.hex('#808e91')(';') + chalk.hex('#3d4345')('5') + chalk.hex('#5e676a')('0') + chalk.hex('#8fa0a4')('+') + chalk.hex('#adadad')(',') + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + chalk.hex('#7b7c7c')('a') + chalk.hex('#adbfc5')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c4ca')('_') + chalk.hex('#6e7a7d')('a') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b0c5ca')('_') + chalk.hex('#788689')('b') + chalk.hex('#a6b8be')('.') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#6b767a')('!') + chalk.hex('#b2c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b0c4cb')('_') + chalk.hex('#a6b8bd')(',') + chalk.hex('#b0c4ca')('_') + chalk.hex('#313638')('7') + chalk.hex('#5a6467')('0') + chalk.hex('#6d797c')('a') + chalk.hex('#b1c4ca')('_') + chalk.hex('#839296')(';') + chalk.hex('#bdbdbd')('_') + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + chalk.hex('#6a6e6f')('?') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c4ca')('_') + chalk.hex('#b0c4c9')('_') + chalk.hex('#6d797d')('a') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#808f92')(';') + chalk.hex('#9dafb4')('-') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#8a999d')(':') + chalk.hex('#8d9da1')('+') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#79868b')('b') + chalk.hex('#6d797d')('a') + chalk.hex('#616c6f')('?') + chalk.hex('#646f72')('?') + chalk.hex('#828e93')(';') + chalk.hex('#b1c5ca')('_') + chalk.hex('#5b6467')('0') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + chalk.hex('#646a6c')('?') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c5ca')('_') + chalk.hex('#6e7a7d')('a') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#9aacb0')('-') + chalk.hex('#849296')(';') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#646f72')('?') + chalk.hex('#a7babf')('.') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#a8babf')('.') + chalk.hex('#6d797c')('a') + chalk.hex('#7b888c')('c') + chalk.hex('#b0c4ca')('_') + chalk.hex('#94a5aa')('=') + chalk.hex('#868787')('c') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + chalk.hex('#676c6d')('?') + chalk.hex('#b0c4ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#879599')(':') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#8c9b9f')(':') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4cb')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4cb')('_') + chalk.hex('#aec1c6')('_') + chalk.hex('#738083')('b') + chalk.hex('#b2c4ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5cb')('_') + chalk.hex('#b0c4cb')('_') + chalk.hex('#b0c4ca')('_') + chalk.hex('#8b9a9f')(':') + chalk.hex('#696b6b')('?') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + chalk.hex('#727474')('!') + chalk.hex('#b0c4c9')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#a1b2b7')(',') + chalk.hex('#707c80')('a') + chalk.hex('#91a2a6')('+') + chalk.hex('#a5b8bd')(',') + chalk.hex('#9fb1b5')('-') + chalk.hex('#7d8b8f')('c') + chalk.hex('#677275')('!') + chalk.hex('#353839')('6') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + chalk.hex('#a5a5a5')('=') + chalk.hex('#8e9ea2')('+') + chalk.hex('#b1c5ca')('_') + chalk.hex('#afc2c8')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#829094')(';') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#a6b8bd')(',') + chalk.hex('#8c9ca0')('+') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#adc0c5')('_') + chalk.hex('#8a9a9f')(':') + chalk.hex('#788689')('b') + chalk.hex('#7d8c8f')('c') + chalk.hex('#9eb0b5')('-') + chalk.hex('#88979c')(':') + chalk.hex('#747575')('!') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#5c6466')('0') + chalk.hex('#b1c4ca')('_') + chalk.hex('#7f8c90')('c') + chalk.hex('#9bacb1')('-') + chalk.hex('#b1c4ca')('_') + chalk.hex('#687376')('!') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4cb')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#646e71')('?') + chalk.hex('#9aabb0')('-') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4cb')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c4ca')('_') + chalk.hex('#97a9ae')('=') + chalk.hex('#6d797c')('a') + chalk.hex('#707273')('!') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#666b6c')('?') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c3c9')('_') + chalk.hex('#616b6e')('?') + chalk.hex('#abbfc4')('.') + chalk.hex('#8a9a9e')(':') + chalk.hex('#93a3a7')('=') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#a5b7bd')(',') + chalk.hex('#50585a')('2') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#93a3a8')('=') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b0c4cb')('_') + chalk.hex('#839296')(';') + chalk.hex('#6e7a7e')('a') + chalk.hex('#b0c4ca')('_') + chalk.hex('#6d7172')('!') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#707273')('!') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#a9bcc1')('.') + chalk.hex('#636d70')('?') + chalk.hex('#748184')('b') + chalk.hex('#869599')(':') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#91a1a6')('+') + chalk.hex('#b1c5ca')('_') + chalk.hex('#6c797c')('a') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#768487')('b') + chalk.hex('#a8bbc0')('.') + chalk.hex('#b1c4ca')('_') + chalk.hex('#afc3c8')('_') + chalk.hex('#839195')(';') + chalk.hex('#616b6e')('?') + chalk.hex('#8b9ca0')(':') + chalk.hex('#b1c5cb')('_') + chalk.hex('#b0c4ca')('_') + chalk.hex('#6f7373')('!') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#929292')(':') + chalk.hex('#9cacb2')('-') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#a1b2b8')(',') + chalk.hex('#4d4d4d')('3') + chalk.hex('#6a7579')('!') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4ca')('_') + chalk.hex('#687376')('!') + chalk.hex('#95a5aa')('=') + chalk.hex('#748084')('b') + chalk.hex('#92a3a7')('+') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c4cb')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#7d8a8f')('c') + chalk.hex('#616c6f')('?') + chalk.hex('#6a7679')('!') + chalk.hex('#3b4042')('5') + chalk.hex('#858686')('c') + chalk.hex('#758285')('b') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#a9bbc0')('.') + chalk.hex('#818182')('b') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#575f61')('1') + chalk.hex('#afc4c9')('_') + chalk.hex('#b0c4ca')('_') + chalk.hex('#5b6567')('0') + ' ' + chalk.hex('#5b6161')('1') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#646f72')('?') + chalk.hex('#87959a')(':') + chalk.hex('#3f4546')('5') + chalk.hex('#596163')('1') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#b1c5ca')('_') + chalk.hex('#697478')('!') + chalk.hex('#aec2c7')('_') + chalk.hex('#abbfc4')('.') + chalk.hex('#4f5355')('3') + ' ' + chalk.hex('#585d5e')('1') + chalk.hex('#acc0c5')('_') + chalk.hex('#b0c4ca')('_') + chalk.hex('#545d61')('1') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#4d5152')('3') + chalk.hex('#353a3b')('6') + chalk.hex('#1d1f1f')('$') + ' ' + chalk.hex('#b6b7b6')('.') + chalk.hex('#616c6f')('?') + chalk.hex('#99aaae')('=') + chalk.hex('#6c787b')('!') + chalk.hex('#434545')('5') + chalk.hex('#3a3e40')('6') + chalk.hex('#343434')('7') + chalk.hex('#a4a4a5')('=') + chalk.hex('#717e81')('a') + chalk.hex('#b1c4ca')('_') + chalk.hex('#9daeb4')('-') + chalk.hex('#383c3d')('6') + chalk.hex('#444748')('4') + chalk.hex('#202424')('9') + chalk.hex('#494b4b')('4') + ' ' + ' ' + chalk.hex('#4b4e4f')('3') + chalk.hex('#373c3d')('6') + chalk.hex('#2c2e2f')('8') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#b9baba')('.') + chalk.hex('#a3a3a2')('=') + ' ' + ' ' + ' ' + chalk.hex('#bcbcbc')('_') + chalk.hex('#262828')('9') + chalk.hex('#454748')('4') + chalk.hex('#a9a9aa')('-') + chalk.hex('#bfbfbf')('_') + ' ' + ' ' + chalk.hex('#bdbdbd')('_') + chalk.hex('#2f3233')('7') + chalk.hex('#26292a')('9') + chalk.hex('#4f5051')('3') + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#acacac')('-') + chalk.hex('#a6a6a6')('-') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + chalk.hex('#bababa')('.') + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
-    console.log(' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ' + ' ');
+    const snoutColor = chalk.rgb(255, 110, 60); // Coral snout
+    const clawColor = chalk.white.bold; // White claws
+    
+    // Mascot is 45 characters wide
+    const mascotWidth = 45;
+    
+    // We will render each line manually to apply the sections and colors correctly
+    const mascotRendered: string[] = [];
+    
+    // Line 1: Indent 15, Body 22
+    mascotRendered.push("               " + colorizeGradient("▄▄██████████████████▄▄", 15, mascotWidth));
+    
+    // Line 2: Indent 13, Body 24
+    mascotRendered.push("             " + colorizeGradient("▄██████████████████████▄", 13, mascotWidth));
+    
+    // Line 3: Indent 11, Body 30
+    mascotRendered.push("           " + colorizeGradient("▄████████████████████████████▄", 11, mascotWidth));
+    
+    // Line 4: Indent 5, Snout 2, Space 3, Head 3, Space 1, Sunglasses 11, Space 1, Body 16
+    mascotRendered.push(
+        "     " + 
+        snoutColor("▄▄") + 
+        "   " + 
+        colorizeGradient("███", 10, mascotWidth) + 
+        " " + 
+        colorizeSunglasses("▄▄▄▄▄▄▄▄▄▄▄") + 
+        " " + 
+        colorizeGradient("████████████████", 26, mascotWidth)
+    );
+    
+    // Line 5: Indent 4, Snout 4, Space 2, Head 3, Space 1, Sunglasses 13, Space 1, Body 16
+    mascotRendered.push(
+        "    " + 
+        snoutColor("█  █") + 
+        "  " + 
+        colorizeGradient("███", 10, mascotWidth) + 
+        " " + 
+        colorizeSunglasses("▀████ ▀ ████▀") + 
+        " " + 
+        colorizeGradient("████████████████", 28, mascotWidth)
+    );
+    
+    // Line 6: Indent 4, Snout 4, Space 2, Head 3, Space 1, Sunglasses 13, Space 1, Body 16
+    mascotRendered.push(
+        "    " + 
+        snoutColor("█  █") + 
+        "  " + 
+        colorizeGradient("███", 10, mascotWidth) + 
+        " " + 
+        colorizeSunglasses("▄████   ▄████") + 
+        " " + 
+        colorizeGradient("▄███████████████", 28, mascotWidth)
+    );
+    
+    // Line 7: Indent 5, Snout 3, Space 3, Body 32
+    mascotRendered.push(
+        "     " + 
+        snoutColor("▀▄▀") + 
+        "   " + 
+        colorizeGradient("▀██████████████████████████████▀", 11, mascotWidth)
+    );
+    
+    // Line 8: Indent 13, Body 28
+    mascotRendered.push("             " + colorizeGradient("▀██████████████████████████▀", 13, mascotWidth));
+    
+    // Line 9: Indent 15, Legs 29
+    mascotRendered.push("               " + colorizeGradient("▀████▀▀▀▀████▀▀▀▀████▀▀▀▀███▀", 15, mascotWidth));
+    
+    // Line 10: Indent 17, Claws 26
+    mascotRendered.push(
+        "                 " + 
+        clawColor("▀▀") + "     " + 
+        clawColor("▀▀") + "     " + 
+        clawColor("▀▀") + "     " + 
+        clawColor("▀▀")
+    );
+    
+    // Title is 49 characters wide
+    const titleWidth = 49;
+    const titleLines = [
+        "████████  ▄██████▄   █████████▄   ████████▄   ███",
+        "  ███    ███    ███  ███    ███   ███    ███  ███",
+        "  ███    ██████████  █████████▀   ███    ███  ███",
+        "  ███    ███    ███  ███  ▀██▄    ███    ███  ███",
+        "  ███    ███    ███  ███    ▀██▄  ████████▀   ███"
+    ];
+    
+    // Colorize the title
+    const titleRendered = titleLines.map(line => colorizeGradient(line, 0, titleWidth));
+    
+    console.log();
+    for (const line of mascotRendered) {
+        console.log("       " + line);
+    }
+    console.log();
+    for (const line of titleRendered) {
+        console.log("     " + line);
+    }
+    console.log();
+    
+    const subtitle = "  🦠 tardi-cli v1.0.0 • Testing non-deterministic agents • Extreme resilience 🦠";
+    console.log(chalk.cyan.bold(subtitle));
+    console.log();
 }
