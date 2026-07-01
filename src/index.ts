@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import { runTests } from './runner';
-import figlet from 'figlet';
-import gradient from 'gradient-string';
+import { printLogo } from './logo';
 import { intro, password, outro, text, select, isCancel, cancel, spinner, note } from '@clack/prompts';
 import chalk from 'chalk';
 import { globSync } from 'glob';
@@ -94,8 +93,7 @@ program
   .description('Initialize a new tardi.yaml test suite interactively')
   .action(async () => {
     console.clear();
-    const logo = figlet.textSync('TARDI', { font: 'Slant' });
-    console.log(gradient.pastel.multiline(logo));
+    printLogo();
     intro(chalk.bgCyan.black(' Initialize Tardi Test Suite '));
 
     if (isCI) {
@@ -259,8 +257,7 @@ program
   .action(async (pathArg, options) => {
     try {
       console.clear();
-      const logo = figlet.textSync('TARDI', { font: 'Slant' });
-      console.log(gradient.pastel.multiline(logo));
+      printLogo();
       intro(chalk.bgCyan.black(' tardi-cli v1.0.0 '));
 
       // ── Discover test files ──
