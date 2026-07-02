@@ -25,6 +25,14 @@
 
 ---
 
+<p align="center">
+  <img src="assets/demo-github.svg" alt="Tardi Auto-Synthesis" width="800" />
+</p>
+
+<p align="center">
+  <img src="assets/demo-terminal.svg" alt="Tardi Execution Summary" width="800" />
+</p>
+
 Tardi is an open-source testing framework engineered specifically for evaluating agentic workflows, autonomous LLM scripts, and non-deterministic applications. 
 
 ## About
