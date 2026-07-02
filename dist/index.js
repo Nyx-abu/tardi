@@ -6,8 +6,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const commander_1 = require("commander");
 const runner_1 = require("./runner");
-const figlet_1 = __importDefault(require("figlet"));
-const gradient_string_1 = __importDefault(require("gradient-string"));
+const logo_1 = require("./logo");
 const prompts_1 = require("@clack/prompts");
 const chalk_1 = __importDefault(require("chalk"));
 const glob_1 = require("glob");
@@ -92,8 +91,7 @@ program
     .description('Initialize a new tardi.yaml test suite interactively')
     .action(async () => {
     console.clear();
-    const logo = figlet_1.default.textSync('TARDI', { font: 'Slant' });
-    console.log(gradient_string_1.default.pastel.multiline(logo));
+    (0, logo_1.printLogo)();
     (0, prompts_1.intro)(chalk_1.default.bgCyan.black(' Initialize Tardi Test Suite '));
     if (ci_info_1.isCI) {
         console.error(chalk_1.default.red('❌ Cannot run interactive init in CI. Use `tardi init --non-interactive` or write tardi.yaml manually.'));
@@ -262,8 +260,7 @@ program
     .action(async (pathArg, options) => {
     try {
         console.clear();
-        const logo = figlet_1.default.textSync('TARDI', { font: 'Slant' });
-        console.log(gradient_string_1.default.pastel.multiline(logo));
+        (0, logo_1.printLogo)();
         (0, prompts_1.intro)(chalk_1.default.bgCyan.black(' tardi-cli v1.0.0 '));
         // ── Discover test files ──
         let testFiles = [];
@@ -328,6 +325,10 @@ program
                     model = localModel;
                 }
                 else {
+                    const defaultModel = provider === 'google' ? 'gemini-2.5-flash'
+                        : provider === 'openai' ? 'gpt-4o'
+                            : provider === 'anthropic' ? 'claude-3-5-sonnet-20241022'
+                                : 'llama3';
                     model = await interactiveKeyAndModelFlow(provider);
                 }
                 options.evaluator = `${provider}:${model}`;
