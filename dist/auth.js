@@ -41,31 +41,59 @@ exports.listStoredProviders = listStoredProviders;
 exports.getEnvironmentKey = getEnvironmentKey;
 exports.resolveApiKey = resolveApiKey;
 exports.fetchAvailableModels = fetchAvailableModels;
-const keytar = __importStar(require("keytar"));
+const keyring_1 = require("@napi-rs/keyring");
 const dotenv = __importStar(require("dotenv"));
 // Load .env automatically
 dotenv.config();
 const SERVICE_NAME = 'tardi-cli';
 // ─── Keychain CRUD ──────────────────────────────────────────────────────────
 async function setProviderKey(provider, key) {
-    await keytar.setPassword(SERVICE_NAME, provider.toLowerCase(), key);
+    const e = new keyring_1.Entry(SERVICE_NAME, provider.toLowerCase());
+    e.setPassword(key);
 }
 async function getProviderKey(provider) {
-    return await keytar.getPassword(SERVICE_NAME, provider.toLowerCase());
+    const e = new keyring_1.Entry(SERVICE_NAME, provider.toLowerCase());
+    try {
+        return e.getPassword() || null;
+    }
+    catch (err) {
+        return null;
+    }
 }
 async function deleteProviderKey(provider) {
-    return await keytar.deletePassword(SERVICE_NAME, provider.toLowerCase());
+    const e = new keyring_1.Entry(SERVICE_NAME, provider.toLowerCase());
+    try {
+        e.deletePassword();
+        return true;
+    }
+    catch (err) {
+        return false;
+    }
 }
 async function wipeAllKeys() {
-    const credentials = await keytar.findCredentials(SERVICE_NAME);
-    for (const cred of credentials) {
-        await keytar.deletePassword(SERVICE_NAME, cred.account);
+    try {
+        const credentials = (0, keyring_1.findCredentials)(SERVICE_NAME);
+        for (const cred of credentials) {
+            const e = new keyring_1.Entry(SERVICE_NAME, cred.account);
+            try {
+                e.deletePassword();
+            }
+            catch (err) { }
+        }
+        return credentials.length;
     }
-    return credentials.length;
+    catch (err) {
+        return 0;
+    }
 }
 async function listStoredProviders() {
-    const credentials = await keytar.findCredentials(SERVICE_NAME);
-    return credentials.map(c => c.account);
+    try {
+        const credentials = (0, keyring_1.findCredentials)(SERVICE_NAME);
+        return credentials.map(c => c.account);
+    }
+    catch (err) {
+        return [];
+    }
 }
 // ─── Env-based key lookup ───────────────────────────────────────────────────
 const ENV_MAP = {

@@ -1,5 +1,38 @@
 #!/usr/bin/env node
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -83,7 +116,7 @@ async function interactiveKeyAndModelFlow(provider) {
 const program = new commander_1.Command();
 program
     .name('tardi')
-    .description('🦠 Tardi — Testing framework for non-deterministic AI agents. Survive the extremes!')
+    .description('Tardi — A deterministic testing framework for LLM agents and non-deterministic AI pipelines.')
     .version('1.0.0');
 // ─── tardi init ─────────────────────────────────────────────────────────────
 program
@@ -256,12 +289,16 @@ program
     .description('Run a suite of agent tests')
     .argument('[path]', 'Path to test config (YAML) or directory. Defaults to auto-discovery.')
     .option('-e, --export <path>', 'Export results to a JSON file')
+    .option('--json', 'Output results as JSON to stdout')
+    .option('--reporter <path>', 'Use a custom JS reporter instead of the default CLI table')
     .option('--evaluator <provider:model>', 'Override the evaluator (e.g. google:gemini-2.0-flash)')
     .action(async (pathArg, options) => {
     try {
-        console.clear();
-        (0, logo_1.printLogo)();
-        (0, prompts_1.intro)(chalk_1.default.bgCyan.black(' tardi-cli v1.0.0 '));
+        if (!options.json) {
+            console.clear();
+            (0, logo_1.printLogo)();
+            (0, prompts_1.intro)(chalk_1.default.bgCyan.black(' tardi-cli v1.0.0 '));
+        }
         // ── Discover test files ──
         let testFiles = [];
         if (!pathArg) {
@@ -285,12 +322,14 @@ program
             }
         }
         if (testFiles.length === 0) {
-            console.error(chalk_1.default.red('❌ No test files found. Run `tardi init` to create one.'));
+            if (!options.json)
+                console.error(chalk_1.default.red('❌ No test files found. Run `tardi init` to create one.'));
             process.exit(1);
         }
         let hasFailures = false;
         for (const file of testFiles) {
-            console.log(chalk_1.default.bold(`\n📝 Suite: ${file}`));
+            if (!options.json)
+                console.log(chalk_1.default.bold(`\n📝 Suite: ${file}`));
             const content = fs_1.default.readFileSync(file, 'utf8');
             const parsed = yaml_1.default.parse(content);
             // ── Resolve provider + model ──
@@ -302,7 +341,7 @@ program
             let provider = overrideProvider || parsed?.evaluator?.provider;
             let model = overrideModel || parsed?.evaluator?.model;
             // If no provider at all, prompt interactively
-            if (!provider && !ci_info_1.isCI && process.stdout.isTTY) {
+            if (!provider && !ci_info_1.isCI && process.stdout.isTTY && !options.json) {
                 console.log(chalk_1.default.yellow(`\n⚠️ No evaluator in ${file}. Let's pick one.`));
                 const selectedProvider = await (0, prompts_1.select)({
                     message: 'Which LLM provider?',
@@ -334,7 +373,7 @@ program
                 options.evaluator = `${provider}:${model}`;
             }
             // If we have a provider but no model, auto-fetch
-            if (provider && provider !== 'local' && !model && !ci_info_1.isCI && process.stdout.isTTY) {
+            if (provider && provider !== 'local' && !model && !ci_info_1.isCI && process.stdout.isTTY && !options.json) {
                 model = await interactiveKeyAndModelFlow(provider);
                 options.evaluator = `${provider}:${model}`;
             }
@@ -342,9 +381,11 @@ program
             if (provider && provider !== 'local') {
                 const key = await (0, auth_1.resolveApiKey)(provider);
                 if (!key) {
-                    if (ci_info_1.isCI || !process.stdout.isTTY) {
-                        console.error(chalk_1.default.red(`\n❌ Missing API key for ${provider}.`));
-                        console.error(chalk_1.default.yellow('In CI, set the env var (e.g. GOOGLE_GENERATIVE_AI_API_KEY).'));
+                    if (ci_info_1.isCI || !process.stdout.isTTY || options.json) {
+                        if (!options.json) {
+                            console.error(chalk_1.default.red(`\n❌ Missing API key for ${provider}.`));
+                            console.error(chalk_1.default.yellow('In CI, set the env var (e.g. GOOGLE_GENERATIVE_AI_API_KEY).'));
+                        }
                         process.exit(1);
                     }
                     else {
@@ -354,7 +395,7 @@ program
                     }
                 }
             }
-            const failed = await (0, runner_1.runTests)(file, options.export, options.evaluator);
+            const failed = await (0, runner_1.runTests)(file, options.export, options.evaluator, !!options.json, options.reporter);
             if (failed)
                 hasFailures = true;
         }
@@ -366,4 +407,42 @@ program
         process.exit(1);
     }
 });
-program.parse();
+// ─── tardi synthesize ───────────────────────────────────────────────────────
+program
+    .command('synthesize <command...>')
+    .description('Run an agent command once and auto-synthesize a tardi.yaml gauntlet')
+    .action(async (commandArgs) => {
+    try {
+        const { synthesizeGauntlet } = await Promise.resolve().then(() => __importStar(require('./synthesizer')));
+        await synthesizeGauntlet(commandArgs.join(' '));
+    }
+    catch (error) {
+        console.error(chalk_1.default.red(`\n❌ Error synthesizing gauntlet: ${error.message}`));
+        process.exit(1);
+    }
+});
+// ─── tardi repl ───────────────────────────────────────────────────────────────
+program
+    .command('repl')
+    .description('Start the interactive Tardi REPL')
+    .action(async () => {
+    try {
+        const { startRepl } = await Promise.resolve().then(() => __importStar(require('./repl')));
+        await startRepl();
+    }
+    catch (error) {
+        console.error(chalk_1.default.red(`\n❌ Failed to start REPL: ${error.message}`));
+        process.exit(1);
+    }
+});
+// ── Entry point logic ──
+if (process.argv.length <= 2) {
+    // Launch REPL if no arguments provided
+    Promise.resolve().then(() => __importStar(require('./repl'))).then(({ startRepl }) => startRepl()).catch(e => {
+        console.error(chalk_1.default.red(`Failed to start REPL: ${e.message}`));
+        process.exit(1);
+    });
+}
+else {
+    program.parse(process.argv);
+}

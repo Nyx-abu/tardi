@@ -45,6 +45,9 @@ const openai_1 = require("@ai-sdk/openai");
 const anthropic_1 = require("@ai-sdk/anthropic");
 const zod_1 = require("zod");
 const ajv_1 = __importDefault(require("ajv"));
+const crypto_1 = __importDefault(require("crypto"));
+const diff_1 = require("diff");
+const adapters_1 = require("./adapters");
 var FailureType;
 (function (FailureType) {
     FailureType["CRASH"] = "CRASH";
@@ -53,9 +56,12 @@ var FailureType;
     FailureType["FORMAT_DRIFT"] = "FORMAT_DRIFT";
     FailureType["SCHEMA_MISMATCH"] = "SCHEMA_MISMATCH";
     FailureType["ASSERTION_FAILED"] = "ASSERTION_FAILED";
+    FailureType["TRAJECTORY_MISMATCH"] = "TRAJECTORY_MISMATCH";
+    FailureType["TELEMETRY_FAILED"] = "TELEMETRY_FAILED";
     FailureType["LLM_JUDGE_FAIL"] = "LLM_JUDGE_FAIL";
 })(FailureType || (exports.FailureType = FailureType = {}));
-async function evaluateIteration(stdout, stderr, exitCode, isTimeout, config) {
+const judgeCache = new Map();
+async function evaluateIteration(stdout, stderr, exitCode, isTimeout, latencyMs, config) {
     // Stage 0: Process Checks
     if (isTimeout) {
         return { passed: false, reason: 'Process exceeded timeout limit', failureType: FailureType.TIMEOUT };
@@ -65,6 +71,16 @@ async function evaluateIteration(stdout, stderr, exitCode, isTimeout, config) {
     }
     if (!stdout.trim()) {
         return { passed: false, reason: 'Process output was empty', failureType: FailureType.EMPTY_OUTPUT };
+    }
+    // Stage 0.5: Hard Telemetry
+    if (config.assertions?.telemetry?.maxLatencyMs) {
+        if (latencyMs > config.assertions.telemetry.maxLatencyMs) {
+            return {
+                passed: false,
+                reason: `Process took ${latencyMs}ms, which exceeds maxLatencyMs of ${config.assertions.telemetry.maxLatencyMs}ms`,
+                failureType: FailureType.TELEMETRY_FAILED
+            };
+        }
     }
     // Stage 1: Deterministic Gates
     if (config.assertions?.regex) {
@@ -97,6 +113,30 @@ async function evaluateIteration(stdout, stderr, exitCode, isTimeout, config) {
             return { passed: false, reason: `Failed to parse JSON: ${e.message}`, failureType: FailureType.SCHEMA_MISMATCH };
         }
     }
+    // Stage 1.5: Trajectory Assertions
+    if (config.assertions?.trajectory && config.assertions.trajectory.length > 0) {
+        const actualSteps = (0, adapters_1.parseStdoutTrajectory)(stdout).map(s => s.content);
+        let currentIndex = -1;
+        for (const expectedStep of config.assertions.trajectory) {
+            const foundIndex = actualSteps.findIndex((step, idx) => idx > currentIndex && step.includes(expectedStep));
+            if (foundIndex === -1) {
+                const expectedTrajectory = config.assertions.trajectory.join('\n');
+                const actualTrajectory = actualSteps.join('\n');
+                const diffResult = (0, diff_1.diffLines)(expectedTrajectory, actualTrajectory);
+                const diffStr = diffResult.map(part => {
+                    const prefix = part.added ? '+' : part.removed ? '-' : ' ';
+                    return part.value.split('\n').filter(l => l).map(l => `${prefix} ${l}`).join('\n');
+                }).join('\n');
+                return {
+                    passed: false,
+                    reason: `Trajectory mismatch: Expected step containing "${expectedStep}" not found in sequence.`,
+                    failureType: FailureType.TRAJECTORY_MISMATCH,
+                    diff: diffStr
+                };
+            }
+            currentIndex = foundIndex;
+        }
+    }
     // Stage 2: LLM as a judge (if configured)
     if (config.evaluator) {
         let model;
@@ -127,19 +167,35 @@ async function evaluateIteration(stdout, stderr, exitCode, isTimeout, config) {
                 throw new Error(`Unsupported provider or missing plugin: ${config.evaluator.provider}`);
             }
         }
-        try {
-            const { object } = await (0, ai_1.generateObject)({
-                model,
-                schema: zod_1.z.object({
-                    passed: zod_1.z.boolean(),
-                    reason: zod_1.z.string(),
-                }),
-                prompt: `Evaluate the following output based on the rubric.\n\nRubric: ${config.evaluator.rubric}\n\nOutput: ${stdout}`
-            });
-            if (!object.passed) {
-                return { passed: false, reason: object.reason, failureType: FailureType.LLM_JUDGE_FAIL };
+        const hash = crypto_1.default.createHash('sha256').update(stdout + config.evaluator.rubric).digest('hex');
+        if (judgeCache.has(hash)) {
+            const cached = judgeCache.get(hash);
+            if (!cached.passed) {
+                return { passed: false, reason: cached.reason, failureType: FailureType.LLM_JUDGE_FAIL, judgeCacheHit: true };
             }
-            return object;
+            return { ...cached, judgeCacheHit: true };
+        }
+        try {
+            let object;
+            if (config.evaluator.provider === 'local' && config.evaluator.model === 'dummy') {
+                object = { passed: true, reason: 'Looks good' };
+            }
+            else {
+                const result = await (0, ai_1.generateObject)({
+                    model,
+                    schema: zod_1.z.object({
+                        passed: zod_1.z.boolean(),
+                        reason: zod_1.z.string(),
+                    }),
+                    prompt: `Evaluate the following output based on the rubric.\n\nRubric: ${config.evaluator.rubric}\n\nOutput: ${stdout}`
+                });
+                object = result.object;
+            }
+            judgeCache.set(hash, object);
+            if (!object.passed) {
+                return { passed: false, reason: object.reason, failureType: FailureType.LLM_JUDGE_FAIL, judgeCacheHit: false };
+            }
+            return { ...object, judgeCacheHit: false };
         }
         catch (e) {
             return { passed: false, reason: `LLM evaluation failed: ${e.message}`, failureType: FailureType.LLM_JUDGE_FAIL };
@@ -154,12 +210,17 @@ function aggregateResults(results) {
     const passRate = totalRuns > 0 ? (passedRuns / totalRuns) * 100 : 0;
     const totalLatency = results.reduce((acc, curr) => acc + curr.latencyMs, 0);
     const avgLatencyMs = totalRuns > 0 ? totalLatency / totalRuns : 0;
+    const cacheHits = results.filter(r => r.judgeCacheHit).length;
+    // It is flaky if it's not 100% passes and not 100% failures
+    const isFlaky = passRate > 0 && passRate < 100;
     return {
         totalRuns,
         passedRuns,
         failedRuns,
         passRate,
         avgLatencyMs,
+        cacheHits,
+        isFlaky,
         results
     };
 }

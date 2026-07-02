@@ -164,7 +164,7 @@ function printLogo() {
         console.log("     " + consoleLine);
     }
     console.log();
-    const subtitle = "  🦠 tardi-cli v1.0.0 • Testing non-deterministic agents • Extreme resilience 🦠";
+    const subtitle = "  tardi-cli v1.0.0 • Deterministic testing for LLM agents";
     console.log(chalk_1.default.cyan.bold(subtitle));
     console.log();
 }
@@ -210,7 +210,7 @@ function generateSVG() {
         textElements += "    " + renderLineToSVG(charsAndColors, 13) + "\n";
     }
     // Subtitle line
-    textElements += `    <tspan x="45" dy="30" fill="#00F2FE" font-weight="bold">  🦠 tardi-cli v1.0.0 • Testing non-deterministic agents • Extreme resilience 🦠</tspan>\n`;
+    textElements += `    <tspan x="45" dy="30" fill="#00F2FE" font-weight="bold">  tardi-cli v1.0.0 • Deterministic testing for LLM agents</tspan>\n`;
     const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 460" width="650" height="460">
   <style>
     .ascii {

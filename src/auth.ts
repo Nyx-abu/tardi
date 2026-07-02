@@ -1,4 +1,4 @@
-import * as keytar from 'keytar';
+import { Entry, findCredentials } from '@napi-rs/keyring';
 import * as dotenv from 'dotenv';
 
 // Load .env automatically
@@ -9,28 +9,49 @@ const SERVICE_NAME = 'tardi-cli';
 // ─── Keychain CRUD ──────────────────────────────────────────────────────────
 
 export async function setProviderKey(provider: string, key: string): Promise<void> {
-  await keytar.setPassword(SERVICE_NAME, provider.toLowerCase(), key);
+  const e = new Entry(SERVICE_NAME, provider.toLowerCase());
+  e.setPassword(key);
 }
 
 export async function getProviderKey(provider: string): Promise<string | null> {
-  return await keytar.getPassword(SERVICE_NAME, provider.toLowerCase());
+  const e = new Entry(SERVICE_NAME, provider.toLowerCase());
+  try {
+    return e.getPassword() || null;
+  } catch (err) {
+    return null;
+  }
 }
 
 export async function deleteProviderKey(provider: string): Promise<boolean> {
-  return await keytar.deletePassword(SERVICE_NAME, provider.toLowerCase());
+  const e = new Entry(SERVICE_NAME, provider.toLowerCase());
+  try {
+    e.deletePassword();
+    return true;
+  } catch (err) {
+    return false;
+  }
 }
 
 export async function wipeAllKeys(): Promise<number> {
-  const credentials = await keytar.findCredentials(SERVICE_NAME);
-  for (const cred of credentials) {
-    await keytar.deletePassword(SERVICE_NAME, cred.account);
+  try {
+    const credentials = findCredentials(SERVICE_NAME);
+    for (const cred of credentials) {
+      const e = new Entry(SERVICE_NAME, cred.account);
+      try { e.deletePassword(); } catch(err) {}
+    }
+    return credentials.length;
+  } catch (err) {
+    return 0;
   }
-  return credentials.length;
 }
 
 export async function listStoredProviders(): Promise<string[]> {
-  const credentials = await keytar.findCredentials(SERVICE_NAME);
-  return credentials.map(c => c.account);
+  try {
+    const credentials = findCredentials(SERVICE_NAME);
+    return credentials.map(c => c.account);
+  } catch(err) {
+    return [];
+  }
 }
 
 // ─── Env-based key lookup ───────────────────────────────────────────────────
