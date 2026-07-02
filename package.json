@@ -11,12 +11,21 @@
   "scripts": {
     "build": "tsc",
     "postbuild": "node dist/schema-generator.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "ai",
+    "llm",
+    "agents",
+    "evals",
+    "llmops",
+    "testing",
+    "llm-as-a-judge",
+    "cli"
+  ],
+  "author": "Tardi Contributors",
   "license": "ISC",
-  "description": "",
+  "description": "A robust, concurrent testing framework for evaluating AI agents and scripts using multi-tiered assertions and LLM-as-a-judge.",
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.5",
     "@ai-sdk/google": "^4.0.5",
@@ -47,5 +56,12 @@
     "eslint": "^10.6.0",
     "prettier": "^3.9.4",
     "vitest": "^4.1.9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Nyx-abu/tardi.git"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
