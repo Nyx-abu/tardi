@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://npmjs.com/package/tardi-cli"><img src="https://img.shields.io/npm/v/tardi-cli.svg" alt="NPM Version" /></a>
+  <a href="https://npmjs.com/package/@abdur-raheem/tardi"><img src="https://img.shields.io/npm/v/@abdur-raheem/tardi.svg" alt="NPM Version" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-ISC-blue.svg" alt="License" /></a>
   <a href="https://github.com/Nyx-abu/tardi/actions"><img src="https://img.shields.io/github/actions/workflow/status/Nyx-abu/tardi/ci.yml?branch=master" alt="Build Status" /></a>
 </p>
@@ -76,7 +76,7 @@ graph TD
 Install the CLI globally via npm to use the `tardi` command anywhere:
 
 ```bash
-npm install -g tardi-cli
+npm install -g @abdur-raheem/tardi
 ```
 
 ## Quickstart
