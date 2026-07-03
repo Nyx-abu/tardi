@@ -16,8 +16,8 @@
     <text x="20" y="60" fill="#00F2FE">$ tardi run tests/01-deterministic-json.tardi.yaml</text>
     
     <!-- Logo/Init -->
-    <text x="20" y="90" fill="#6c757d">📝 Suite: tests/01-deterministic-json.tardi.yaml</text>
-    <text x="20" y="115" fill="#27c93f">✓ Completed 5 iterations for: Agent 01-deterministic-json</text>
+    <text x="20" y="90" fill="#6c757d">[START] Suite: tests/01-deterministic-json.tardi.yaml</text>
+    <text x="20" y="115" fill="#27c93f">[INFO] Completed 5 iterations for: Agent 01-deterministic-json</text>
     
     <!-- Table Header -->
     <text x="20" y="150" fill="#ffffff"> ╭────────────────────────  Tardi Execution Summary  ────────────────────────╮</text>

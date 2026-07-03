@@ -17,21 +17,13 @@
 <p align="center">
   <a href="#about">About</a> •
   <a href="#features">Features</a> •
+  <a href="#the-tardi-pipeline">The Pipeline</a> •
   <a href="#installation">Installation</a> •
   <a href="#quickstart">Quickstart</a> •
-  <a href="#writing-tests">Writing Tests</a> •
-  <a href="#evaluation-pipeline">Evaluation Pipeline</a>
+  <a href="#examples-output">Examples & Output</a>
 </p>
 
 ---
-
-<p align="center">
-  <img src="assets/demo-github.svg" alt="Tardi Auto-Synthesis" width="800" />
-</p>
-
-<p align="center">
-  <img src="assets/demo-terminal.svg" alt="Tardi Execution Summary" width="800" />
-</p>
 
 Tardi is an open-source testing framework engineered specifically for evaluating agentic workflows, autonomous LLM scripts, and non-deterministic applications. 
 
@@ -49,64 +41,9 @@ Testing AI agents presents a unique challenge: traditional testing frameworks ca
 - **Interactive REPL & Natural Language CLI:** Includes a zero-friction CLI environment for rapid test synthesis, execution, and debugging, powered by an onboard NLP intent parser.
 - **Secure Credential Management:** Safely stores provider API keys in your native OS keychain during local development.
 
-## Installation
+## The Tardi Pipeline
 
-Install the CLI globally via npm to use the `tardi` command anywhere:
-
-```bash
-npm install -g tardi-cli
-```
-
-## Quickstart
-
-1. **Initialize Tardi in your repository:**
-   ```bash
-   tardi init
-   ```
-   This will generate a `tardi.yaml` configuration file and prompt you to select your preferred evaluation provider.
-
-2. **Authenticate with an LLM provider:**
-   ```bash
-   tardi auth login google
-   ```
-   Tardi securely stores your API key using your native OS keychain.
-
-3. **Run your agent test suites:**
-   ```bash
-   tardi run tests/
-   ```
-
-## Writing Tests
-
-Tardi utilizes simple YAML files (`*.tardi.yaml`) to define test suites. You can specify concurrency constraints, iteration counts, execution timeouts, and a multi-layered assertion stack.
-
-```yaml
-# tests/example.tardi.yaml
-name: Agent JSON Output Test
-command: node path/to/your/agent.js
-iterations: 5
-concurrency: 2
-timeoutMs: 30000
-
-# 1. Deterministic assertions execute first
-assertions:
-  jsonSchema:
-    type: object
-    required: ["status", "result"]
-  regex: "\"status\":\\s*\"(success|failure)\""
-
-# 2. LLM Judge evaluates the final semantic intent
-evaluator:
-  provider: google
-  model: gemini-2.5-flash
-  prompt: |
-    Evaluate if the agent successfully summarized the input document.
-    Return only 'PASS' or 'FAIL'.
-```
-
-## Evaluation Pipeline
-
-When you execute an iteration, Tardi evaluates the agent's output through a strict, cost-saving pipeline:
+When you execute an iteration, Tardi evaluates the agent's output through a strict, cost-saving pipeline. Deterministic checks always run first.
 
 ```mermaid
 graph TD
@@ -132,6 +69,119 @@ graph TD
     style FailSchema fill:#fbd4d4,stroke:#f87171,color:#000
     style FailJudge fill:#fbd4d4,stroke:#f87171,color:#000
     style Pass fill:#dcfce7,stroke:#4ade80,color:#000
+```
+
+## Installation
+
+Install the CLI globally via npm to use the `tardi` command anywhere:
+
+```bash
+npm install -g tardi-cli
+```
+
+## Quickstart
+
+### 1. Auto-Synthesize from a GitHub Repository
+Tardi can automatically clone an agent repository, detect its entry point, and synthesize a test gauntlet based on golden runs.
+
+```bash
+tardi github https://github.com/Nyx-abu/demo-agent.git
+```
+
+<p align="center">
+  <img src="assets/demo-github.svg" alt="Tardi Auto-Synthesis" width="800" />
+</p>
+
+### 2. Manual Initialization
+If you prefer to configure your suite manually:
+
+```bash
+tardi init
+tardi auth login google
+tardi run tests/
+```
+
+## Examples & Output
+
+Tardi utilizes simple YAML files (`*.tardi.yaml`) to define test suites. Below are detailed examples of how Tardi behaves under different failure and success conditions.
+
+### Scenario A: Deterministic JSON Schema Validation
+
+A common requirement for AI agents is to return structured JSON. Tardi catches malformed JSON or missing fields *deterministically*, bypassing the LLM Judge entirely.
+
+**Test Configuration:**
+```yaml
+# tests/json-schema.tardi.yaml
+name: Agent JSON Output Test
+command: node src/agent.js
+iterations: 5
+concurrency: 2
+
+assertions:
+  jsonSchema:
+    type: object
+    required: ["status", "result"]
+```
+
+**Expected Tardi Output (Schema Mismatch):**
+If the agent forgets to include the `result` field, Tardi immediately aborts the pipeline and outputs a schema mismatch error:
+
+```text
+ ╭────────────────────────  Tardi Execution Summary  ────────────────────────╮
+ │   ┌─────────────┬──────────┐                                              │
+ │   │ Metric      │ Value    │                                              │
+ │   ├─────────────┼──────────┤                                              │
+ │   │ Total Runs  │ 5        │                                              │
+ │   │ Passed      │ 4        │                                              │
+ │   │ Failed      │ 1        │                                              │
+ │   │ Flakiness   │ 20.00%   │                                              │
+ │   └─────────────┴──────────┘                                              │
+ │                                                                           │
+ │   Failures:                                                               │
+ │   - Iteration 3 [SCHEMA_MISMATCH]: Output failed JSON Schema validation.  │
+ │     Missing required property: 'result'.                                  │
+ ╰───────────────────────────────────────────────────────────────────────────╯
+```
+
+### Scenario B: Semantic Evaluation with LLM-as-a-Judge
+
+If your agent passes all deterministic constraints, Tardi forwards the raw output to an LLM evaluator. The LLM evaluator uses your custom rubric to score the output.
+
+**Test Configuration:**
+```yaml
+# tests/evaluator.tardi.yaml
+name: Semantic Agent Test
+command: node src/summarize.js
+iterations: 3
+
+assertions:
+  regex: "summary:"
+
+evaluator:
+  provider: google
+  model: gemini-2.5-flash
+  prompt: |
+    Evaluate if the agent successfully summarized the input document.
+    Return only 'PASS' or 'FAIL'.
+```
+
+**Expected Tardi Output (LLM Judge Failure):**
+
+<p align="center">
+  <img src="assets/demo-terminal.svg" alt="Tardi Execution Summary" width="800" />
+</p>
+
+### Scenario C: Uncaught Exceptions & Process Crashes
+
+When testing complex autonomous scripts, agents often crash mid-execution. Tardi intercepts process crashes and records the exit codes, allowing you to debug stability issues over multiple iterations.
+
+**Expected Tardi Output (Crash):**
+```text
+ ╭────────────────────────  Tardi Execution Summary  ────────────────────────╮
+ │   Failures:                                                               │
+ │   - Iteration 2 [CRASH]: Agent process exited with code 1.                │
+ │     Stderr: Error: Uncaught exception in src/agent.js:42                  │
+ ╰───────────────────────────────────────────────────────────────────────────╯
 ```
 
 ## CI/CD Usage
