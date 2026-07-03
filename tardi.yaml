@@ -1,12 +1,20 @@
-# yaml-language-server: $schema=https://schema.tardi.dev/v1/test-suite.json
-name: My Tardi Test Suite
-agentCommand: "echo '{\"status\": \"Success\"}'"
+name: Auto-Synthesized Agent Test
+agentCommand: node dummy-agent.js
 iterations: 5
 concurrency: 2
-timeoutMs: 5000
+timeoutMs: 30000
+sandbox: true
+flakinessThreshold: 80
+failFast: true
 assertions:
-  regex: "Success"
+  trajectory:
+    - I need to query the database
+    - query_database(id=5)
+    - "{ name: 'John Doe' }"
+    - Now I have the user's name.
+  telemetry:
+    maxLatencyMs: 60000
 evaluator:
-  provider: local
-  model: llama3
-  rubric: "Output must contain Success"
+  provider: google
+  model: gemini-2.5-flash
+  rubric: Evaluate the overall quality of the output.

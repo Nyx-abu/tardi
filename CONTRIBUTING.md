@@ -46,3 +46,16 @@ npm run test
 ## Need Help?
 
 If you have any questions or need guidance, feel free to open a Discussion on GitHub.
+
+## Semantic Versioning & Changesets
+
+This project strictly follows [Semantic Versioning (SemVer)](https://semver.org/).
+- **MAJOR** version when you make incompatible API changes (e.g., changes to `tardi.yaml` that break existing suites).
+- **MINOR** version when you add functionality in a backward compatible manner (e.g., new evaluation modes, new CLI flags).
+- **PATCH** version when you make backward compatible bug fixes.
+
+We use [`@changesets/cli`](https://github.com/changesets/changesets) to manage versioning and changelogs. When you submit a PR that requires a version bump, please run:
+```bash
+npx changeset
+```
+Follow the prompts to describe your changes and commit the generated markdown file along with your PR.

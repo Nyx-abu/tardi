@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="100%">
+  <!-- Window Background -->
+  <rect width="800" height="500" rx="10" ry="10" fill="#121212" />
+  
+  <!-- macOS Window Controls -->
+  <circle cx="20" cy="20" r="6" fill="#ff5f56" />
+  <circle cx="40" cy="20" r="6" fill="#ffbd2e" />
+  <circle cx="60" cy="20" r="6" fill="#27c93f" />
+
+  <!-- Window Title -->
+  <text x="400" y="24" fill="#888888" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" text-anchor="middle">tardi run tests/</text>
+
+  <!-- Terminal Content -->
+  <g font-family="Menlo, Monaco, Consolas, 'Courier New', monospace" font-size="14">
+    <!-- Command -->
+    <text x="20" y="60" fill="#00F2FE">$ tardi run tests/01-deterministic-json.tardi.yaml</text>
+    
+    <!-- Logo/Init -->
+    <text x="20" y="90" fill="#6c757d">[START] Suite: tests/01-deterministic-json.tardi.yaml</text>
+    <text x="20" y="115" fill="#27c93f">[INFO] Completed 5 iterations for: Agent 01-deterministic-json</text>
+    
+    <!-- Table Header -->
+    <text x="20" y="150" fill="#ffffff"> ╭────────────────────────  Tardi Execution Summary  ────────────────────────╮</text>
+    <text x="20" y="170" fill="#ffffff"> │                                                                           │</text>
+    
+    <!-- Table Content -->
+    <text x="20" y="190" fill="#ffffff"> │   ┌─────────────┬──────────┐                                              │</text>
+    <text x="20" y="210" fill="#ffffff"> │   │ Metric      │ Value    │                                              │</text>
+    <text x="20" y="230" fill="#ffffff"> │   ├─────────────┼──────────┤                                              │</text>
+    <text x="20" y="250" fill="#ffffff"> │   │ Total Runs  │ 5        │                                              │</text>
+    <text x="20" y="270" fill="#ffffff"> │   ├─────────────┼──────────┤                                              │</text>
+    <text x="20" y="290" fill="#ffffff"> │   │ Passed      │ 4        │                                              │</text>
+    <text x="20" y="310" fill="#ffffff"> │   ├─────────────┼──────────┤                                              │</text>
+    <text x="20" y="330" fill="#ffffff"> │   │ Failed      │ 1        │                                              │</text>
+    <text x="20" y="350" fill="#ffffff"> │   ├─────────────┼──────────┤                                              │</text>
+    <text x="20" y="370" fill="#ffffff"> │   │ Flakiness   │ 20.00%   │                                              │</text>
+    <text x="20" y="390" fill="#ffffff"> │   └─────────────┴──────────┘                                              │</text>
+    
+    <!-- Error Content -->
+    <text x="20" y="420" fill="#ffffff"> │   <tspan fill="#ff5f56">Failures:</tspan>                                                               │</text>
+    <text x="20" y="440" fill="#ffffff"> │   - Iteration 3 <tspan fill="#ffbd2e">[LLM_JUDGE_FAIL]</tspan>: Output does not contain the required    │</text>
+    <text x="20" y="460" fill="#ffffff"> │   properties 'passed' and 'reason' as specified by the rubric.            │</text>
+    
+    <text x="20" y="490" fill="#ffffff"> ╰───────────────────────────────────────────────────────────────────────────╯</text>
+  </g>
+</svg>

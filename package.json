@@ -11,26 +11,29 @@
   "scripts": {
     "build": "tsc",
     "postbuild": "node dist/schema-generator.js",
-    "test": "vitest run"
+    "test": "vitest run src/",
+    "release": "npm run build && changeset publish"
   },
   "keywords": [
-    "ai",
-    "llm",
-    "agents",
-    "evals",
+    "ai-testing",
+    "llm-evaluations",
+    "agentic-testing",
     "llmops",
-    "testing",
-    "llm-as-a-judge",
-    "cli"
+    "ai-agents",
+    "developer-tools",
+    "cli",
+    "test-framework",
+    "llm-as-a-judge"
   ],
   "author": "Tardi Contributors",
   "license": "ISC",
-  "description": "A robust, concurrent testing framework for evaluating AI agents and scripts using multi-tiered assertions and LLM-as-a-judge.",
+  "description": "A deterministic testing framework for LLM agents and non-deterministic AI pipelines, minimizing token cost via tiered assertions.",
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.5",
     "@ai-sdk/google": "^4.0.5",
     "@ai-sdk/openai": "^4.0.5",
     "@clack/prompts": "^1.6.0",
+    "@napi-rs/keyring": "^1.3.0",
     "ai": "^7.0.10",
     "ajv": "^8.20.0",
     "boxen": "^8.0.1",
@@ -38,9 +41,9 @@
     "ci-info": "^4.4.0",
     "cli-table3": "^0.6.5",
     "commander": "^15.0.0",
+    "diff": "^9.0.0",
     "dotenv": "^17.4.2",
     "glob": "^13.0.6",
-    "keytar": "^7.9.0",
     "ora": "^9.4.1",
     "p-limit": "^7.3.0",
     "pngjs": "^7.0.0",
@@ -48,9 +51,11 @@
     "typescript": "^6.0.3",
     "yaml": "^2.9.0",
     "zod": "^4.4.3",
-    "zod-to-json-schema": "^3.25.2"
+    "zod-to-json-schema": "^3.25.2",
+    "zod-validation-error": "^5.0.0"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.31.0",
     "@types/node": "^26.1.0",
     "@types/pngjs": "^6.0.5",
     "eslint": "^10.6.0",
