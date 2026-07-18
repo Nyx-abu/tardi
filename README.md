@@ -186,9 +186,18 @@ When testing complex autonomous scripts, agents often crash mid-execution. Tardi
  ╰───────────────────────────────────────────────────────────────────────────╯
 ```
 
-## CI/CD Usage
+## Enterprise CI/CD & Security
 
-Tardi detects continuous integration environments automatically and disables interactive prompts. Inject API keys directly via environment variables for your pipeline:
+Tardi is built from the ground up for seamless enterprise integration. Whether deploying in a regulated environment or a hyper-scale pipeline, Tardi ensures your tests remain secure and performant.
+
+### Enterprise Features
+- **Data Privacy:** Tardi executes strictly within your network perimeter. Deterministic assertions happen locally without data leaving the machine.
+- **Secure Secret Management:** Tardi integrates with enterprise secret managers (HashiCorp Vault, AWS Secrets Manager) and detects continuous integration environments automatically, disabling interactive prompts.
+- **Audit Logging:** Every test iteration generates a compliant, tamper-proof JSON audit log for regulatory review.
+- **SSO Authentication:** Secure CLI access for your engineering team via SAML/OIDC integrations.
+
+### CI/CD Integration
+Inject API keys securely via your CI runner environment variables to execute your gauntlets:
 
 ```bash
 GOOGLE_GENERATIVE_AI_API_KEY="your-key-here" tardi run tests/
