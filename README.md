@@ -36,9 +36,11 @@ Testing AI agents presents a unique challenge: traditional testing frameworks ca
 ## Features
 
 - **Tiered Evaluation Engine:** Catch process crashes, timeouts, and schema mismatches deterministically before triggering expensive LLM judges.
+- **Deterministic Prompt Assembly & Token Budgeting:** Automatically enforce token limits when assembling prompts with context, constraints, and dynamic inputs. Avoid context overflow dynamically.
+- **Injection Defense Layer:** Built-in semantic and tag-based sanitization automatically neutralizes prompt injection attempts (e.g., users attempting to escape `<user_input>` blocks).
 - **Concurrency & Rate-Limiting:** Execute test suites in parallel with intelligent chunking to maximize throughput without exceeding API rate limits.
 - **Provider Agnostic:** Built on the standard Vercel AI SDK, Tardi supports hot-swappable evaluation models from OpenAI, Google, Anthropic, and local endpoints.
-- **Interactive REPL & Natural Language CLI:** Includes a zero-friction CLI environment for rapid test synthesis, execution, and debugging, powered by an onboard NLP intent parser.
+- **Interactive REPL & Natural Language CLI:** Includes a CLI environment for rapid test synthesis, execution, and debugging, powered by an onboard NLP intent parser.
 - **Secure Credential Management:** Safely stores provider API keys in your native OS keychain during local development.
 
 ## The Tardi Pipeline
